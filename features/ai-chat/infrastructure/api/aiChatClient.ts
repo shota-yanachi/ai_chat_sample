@@ -1,6 +1,5 @@
 const BASE_URL =
-  process.env.NEXT_PUBLIC_AI_CHAT_API_BASE_URL ??
-  "https://ai-chat.shota-yanachi.workers.dev";
+  process.env.NEXT_PUBLIC_AI_CHAT_API_BASE_URL;
 
 export async function aiChatFetch<T>(
   path: string,

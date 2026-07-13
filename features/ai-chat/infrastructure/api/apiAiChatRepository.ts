@@ -64,8 +64,7 @@ export async function sendMessage(
 }
 
 const WS_URL =
-  process.env.NEXT_PUBLIC_AI_CHAT_WS_URL ??
-  "wss://zendesk-websocket-test.onrender.com/ws";
+  process.env.NEXT_PUBLIC_AI_CHAT_WS_URL;
 
 interface RawIncomingMessage {
   message: { id: string; body: string };
