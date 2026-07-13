@@ -20,7 +20,7 @@ export function AiChatInputBar({ disabled, onSend }: AiChatInputBarProps) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="flex items-center gap-2 border-t border-zinc-200 px-4 py-3 dark:border-zinc-800"
+      className="flex shrink-0 items-center gap-2 border-t border-zinc-200 px-4 py-3 dark:border-zinc-800"
     >
       <input
         type="text"

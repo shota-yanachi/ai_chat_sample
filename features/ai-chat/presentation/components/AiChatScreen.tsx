@@ -30,8 +30,8 @@ export function AiChatScreen({ conversationId, onBack }: AiChatScreenProps) {
   }
 
   return (
-    <div className="flex flex-1 flex-col">
-      <header className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
+    <div className="flex min-h-0 flex-1 flex-col">
+      <header className="flex shrink-0 items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <button
           type="button"
           onClick={onBack}
