@@ -14,27 +14,30 @@ interface UseAiChatController {
   sendMessage: (text: string) => Promise<void>;
 }
 
-export function useAiChatController(): UseAiChatController {
+export function useAiChatController(conversationId: string): UseAiChatController {
   const [status, setStatus] = useState<Status>("loading");
   const [state, setState] = useState<AiChatState | null>(null);
   const [error, setError] = useState<string | null>(null);
 
-  const initialized = useRef(false);
+  const loadedFor = useRef<string | null>(null);
   const unsubscribeRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
-    if (!initialized.current) {
-      initialized.current = true;
+    if (loadedFor.current !== conversationId) {
+      loadedFor.current = conversationId;
+      setStatus("loading");
+      setState(null);
+      setError(null);
 
       (async () => {
         try {
           const userExternalId = getOrCreateUserExternalId();
-          const result = await usecase.resumeOrStartConversation(userExternalId);
+          const result = await usecase.loadSession(conversationId, userExternalId);
           setState(result);
           setStatus("ready");
 
           unsubscribeRef.current = usecase.subscribeToIncomingMessages(
-            result.conversationId,
+            conversationId,
             (message) => {
               setState((prev) =>
                 prev ? { ...prev, messages: [...prev.messages, message] } : prev,
@@ -52,12 +55,12 @@ export function useAiChatController(): UseAiChatController {
       unsubscribeRef.current?.();
       unsubscribeRef.current = null;
     };
-  }, []);
+  }, [conversationId]);
 
   const sendMessage = useCallback(
     async (text: string) => {
       const trimmed = text.trim();
-      if (!trimmed || !state || state.remainingCount <= 0 || state.isSending) return;
+      if (!trimmed || !state || state.isSending) return;
 
       const optimisticMessage: AiChatMessage = {
         id: crypto.randomUUID(),
@@ -71,7 +74,6 @@ export function useAiChatController(): UseAiChatController {
           ? {
               ...prev,
               messages: [...prev.messages, optimisticMessage],
-              remainingCount: prev.remainingCount - 1,
               isSending: true,
             }
           : prev,

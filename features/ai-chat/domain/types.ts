@@ -16,6 +16,5 @@ export interface AiChatState {
   conversationId: string;
   userExternalId: string;
   messages: AiChatMessage[];
-  remainingCount: number;
   isSending: boolean;
 }
