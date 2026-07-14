@@ -1,8 +1,17 @@
+"use client";
+
+import { useEffect, useRef } from "react";
 import type { AiChatMessage } from "../../domain/types";
 import { formatTimestamp } from "../formatTimestamp";
 import { AiChatAvatarIcon } from "./AiChatAvatarIcon";
 
 export function AiChatMessageList({ messages }: { messages: AiChatMessage[] }) {
+  const bottomRef = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ block: "end" });
+  }, [messages.length]);
+
   return (
     <ul className="flex flex-1 flex-col gap-4 overflow-y-auto px-4 py-4">
       {messages.map((message) => (
@@ -31,6 +40,7 @@ export function AiChatMessageList({ messages }: { messages: AiChatMessage[] }) {
           </span>
         </li>
       ))}
+      <li ref={bottomRef} />
     </ul>
   );
 }

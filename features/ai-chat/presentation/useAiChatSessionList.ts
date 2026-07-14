@@ -61,8 +61,9 @@ export function useAiChatSessionList(): UseAiChatSessionList {
     try {
       const userExternalId = getOrCreateUserExternalId();
       await usecase.deleteUser(userExternalId);
-      resetUserExternalId();
-      setSessions([]);
+      const newUserExternalId = resetUserExternalId();
+      const result = await usecase.listSessions(newUserExternalId);
+      setSessions(result);
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unknown error");
     } finally {
