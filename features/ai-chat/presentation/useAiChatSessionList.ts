@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { getOrCreateUserExternalId } from "@/lib/user/userExternalId";
+import { getOrCreateUserExternalId, resetUserExternalId } from "@/lib/user/userExternalId";
 import * as usecase from "../usecase/aiChatUsecase";
 import type { AiChatConversationSummary } from "../domain/types";
 
@@ -12,7 +12,9 @@ interface UseAiChatSessionList {
   sessions: AiChatConversationSummary[];
   error: string | null;
   isCreating: boolean;
+  isResetting: boolean;
   startNewSession: () => Promise<string | null>;
+  resetSessions: () => Promise<void>;
 }
 
 export function useAiChatSessionList(): UseAiChatSessionList {
@@ -20,6 +22,7 @@ export function useAiChatSessionList(): UseAiChatSessionList {
   const [sessions, setSessions] = useState<AiChatConversationSummary[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
 
   const initialized = useRef(false);
 
@@ -53,5 +56,19 @@ export function useAiChatSessionList(): UseAiChatSessionList {
     }
   }, []);
 
-  return { status, sessions, error, isCreating, startNewSession };
+  const resetSessions = useCallback(async () => {
+    setIsResetting(true);
+    try {
+      const userExternalId = getOrCreateUserExternalId();
+      await usecase.deleteUser(userExternalId);
+      resetUserExternalId();
+      setSessions([]);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Unknown error");
+    } finally {
+      setIsResetting(false);
+    }
+  }, []);
+
+  return { status, sessions, error, isCreating, isResetting, startNewSession, resetSessions };
 }

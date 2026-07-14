@@ -5,23 +5,41 @@ import { AiChatAvatarIcon } from "./AiChatAvatarIcon";
 interface AiChatSessionListProps {
   sessions: AiChatConversationSummary[];
   isCreating: boolean;
+  isResetting: boolean;
   onSelect: (conversationId: string) => void;
   onStartNew: () => void;
+  onReset: () => void;
 }
 
 export function AiChatSessionList({
   sessions,
   isCreating,
+  isResetting,
   onSelect,
   onStartNew,
+  onReset,
 }: AiChatSessionListProps) {
+  const handleReset = () => {
+    if (window.confirm("トーク一覧をリセットしますか?この操作は元に戻せません。")) {
+      onReset();
+    }
+  };
+
   return (
     <div className="flex flex-1 flex-col">
       <header className="flex items-center gap-2 border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
         <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#FDEDEB]">
           <AiChatAvatarIcon className="h-5 w-5" />
         </span>
-        <h1 className="text-base font-semibold">セッション一覧</h1>
+        <h1 className="flex-1 text-base font-semibold">セッション一覧</h1>
+        <button
+          type="button"
+          onClick={handleReset}
+          disabled={isResetting}
+          className="rounded-full border border-red-300 px-3 py-1.5 text-xs font-medium text-red-600 hover:bg-red-50 disabled:opacity-50 dark:border-red-800 dark:hover:bg-red-950"
+        >
+          {isResetting ? "リセット中..." : "トーク一覧をリセット"}
+        </button>
       </header>
 
       <div className="flex-1 overflow-y-auto px-4 py-4">

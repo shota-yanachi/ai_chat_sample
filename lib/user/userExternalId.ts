@@ -11,3 +11,12 @@ export function getOrCreateUserExternalId(): string {
   window.localStorage.setItem(STORAGE_KEY, generated);
   return generated;
 }
+
+export function resetUserExternalId(): string {
+  if (typeof window === "undefined") {
+    throw new Error("resetUserExternalId must be called on the client");
+  }
+  const generated = crypto.randomUUID();
+  window.localStorage.setItem(STORAGE_KEY, generated);
+  return generated;
+}

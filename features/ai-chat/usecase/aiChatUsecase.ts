@@ -15,6 +15,10 @@ export async function startNewSession(userExternalId: string): Promise<string> {
   return repo.createConversation(userExternalId);
 }
 
+export async function deleteUser(userExternalId: string): Promise<void> {
+  await repo.deleteUser(userExternalId);
+}
+
 function buildGreeting(): AiChatMessage {
   return {
     id: crypto.randomUUID(),

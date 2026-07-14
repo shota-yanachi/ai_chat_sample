@@ -24,7 +24,8 @@ function AiChatPageContent() {
   const searchParams = useSearchParams();
   const conversationId = searchParams.get("conversationId");
 
-  const { status, sessions, error, isCreating, startNewSession } = useAiChatSessionList();
+  const { status, sessions, error, isCreating, isResetting, startNewSession, resetSessions } =
+    useAiChatSessionList();
 
   if (conversationId) {
     return (
@@ -51,11 +52,13 @@ function AiChatPageContent() {
     <AiChatSessionList
       sessions={sessions}
       isCreating={isCreating}
+      isResetting={isResetting}
       onSelect={(id) => router.push(`/ai-chat?conversationId=${id}`)}
       onStartNew={async () => {
         const id = await startNewSession();
         if (id) router.push(`/ai-chat?conversationId=${id}`);
       }}
+      onReset={resetSessions}
     />
   );
 }

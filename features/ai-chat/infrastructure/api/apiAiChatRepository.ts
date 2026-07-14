@@ -15,6 +15,12 @@ export async function ensureUser(userExternalId: string): Promise<void> {
   });
 }
 
+export async function deleteUser(userExternalId: string): Promise<void> {
+  await aiChatFetch(`/users/${encodeURIComponent(userExternalId)}`, {
+    method: "DELETE",
+  });
+}
+
 export async function listConversations(
   userExternalId: string,
 ): Promise<AiChatConversationSummary[]> {
